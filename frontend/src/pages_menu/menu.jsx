@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Search, Camera, Menu, MapPin } from "lucide-react";
+import { Search, Camera, Menu, MapPin, Filter } from "lucide-react";
+import { useParams } from "react-router-dom";
 
 export default function MenuPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [menuItems, setMenuItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [vegOnly, setVegOnly] = useState(false);
+
   const categories = [
     { id: 1, name: "Veg", icon: "🟢" },
     { id: 2, name: "Spicy", icon: "🔺" },
@@ -12,13 +16,14 @@ export default function MenuPage() {
     { id: 4, name: "Indian Starter" },
   ];
 
+  const { rest_id } = useParams();
+
   useEffect(() => {
     // Fetch data using Axios
     axios
-      .get("http://localhost:4000/admin/dish_list/1")
+      .get(`${import.meta.env.REACT_APP_BASE_URL}/menu/dishes/${rest_id}`)
       .then((response) => {
         const data = response.data;
-        // Map the API response to menuItems format
         const items = data.dishes.map((dish) => ({
           id: dish.item_id,
           name: dish.name,
@@ -29,28 +34,59 @@ export default function MenuPage() {
           image: dish.image,
         }));
         setMenuItems(items);
+        setFilteredItems(items);
       })
       .catch((error) => {
         console.error("Error fetching menu:", error);
       });
-  }, []);
+  }, [rest_id]);
+
+  // Search and filter functionality
+  useEffect(() => {
+    let filtered = menuItems;
+
+    // Apply veg filter
+    if (vegOnly) {
+      filtered = filtered.filter((item) => item.isVeg);
+    }
+
+    // Apply search filter
+    if (searchQuery) {
+      filtered = filtered.filter(
+        (item) =>
+          item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    setFilteredItems(filtered);
+  }, [searchQuery, vegOnly, menuItems]);
+
+  // Toggle function for veg/non-veg switch
+  const toggleVegOnly = () => {
+    setVegOnly(!vegOnly);
+  };
 
   return (
     <div className="max-w-md mx-auto bg-gray-50 min-h-screen">
       {/* Location Header */}
-      <div className="p-4 bg-white shadow-sm">
-        <div className="flex items-center gap-2 text-gray-600">
-          <MapPin className="w-5 h-5 text-orange-500" />
+      <div className="p-4 bg-white">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center">
+            <MapPin className="w-4 h-4 text-red-500" />
+          </div>
           <div>
-            <p className="text-sm">You're at</p>
-            <h2 className="font-semibold">Jl. Soekarno Hatta 15A...</h2>
+            <p className="text-xs text-gray-500">You're at</p>
+            <h2 className="font-medium text-gray-900">
+              Jl. Soekarno Hatta 15A...
+            </h2>
           </div>
         </div>
       </div>
 
       {/* Search Bar */}
       <div className="p-4">
-        <div className="relative">
+        <div className="relative flex items-center">
           <input
             type="text"
             placeholder="Search menu, restaurant or etc"
@@ -59,47 +95,82 @@ export default function MenuPage() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <Search className="w-5 h-5 absolute left-3 top-3.5 text-gray-400" />
+          <button className="absolute right-3">
+            <Filter className="w-5 h-5 text-gray-400" />
+          </button>
         </div>
       </div>
 
-      {/* Categories */}
-      <div className="px-4 flex gap-2 overflow-x-auto no-scrollbar">
-        {categories.map((category) => (
-          <button
-            key={category.id}
-            className="px-4 py-2 bg-white rounded-full border border-gray-200 whitespace-nowrap"
-          >
-            {category.icon && <span className="mr-2">{category.icon}</span>}
-            {category.name}
-          </button>
-        ))}
+      {/* Categories and Veg Toggle */}
+      <div className="px-4 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {/* Custom toggle switch */}
+            <button
+              onClick={toggleVegOnly}
+              className={`relative w-11 h-6 rounded-full transition-colors duration-200 ease-in-out ${
+                vegOnly ? "bg-green-500" : "bg-gray-200"
+              }`}
+            >
+              <span
+                className={`absolute left-1 top-1 w-4 h-4 rounded-full bg-white transition-transform duration-200 ease-in-out ${
+                  vegOnly ? "translate-x-5" : "translate-x-0"
+                }`}
+              />
+            </button>
+            <span className="text-sm font-medium">Veg Only</span>
+          </div>
+        </div>
+
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+          {categories.map((category) => (
+            <button
+              key={category.id}
+              className="px-4 py-2 bg-white rounded-full border border-gray-200 whitespace-nowrap text-sm"
+            >
+              {category.icon && <span className="mr-2">{category.icon}</span>}
+              {category.name}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Menu Items */}
       <div className="p-4 space-y-4">
-        {menuItems.map((item) => (
+        {filteredItems.map((item) => (
           <div
             key={item.id}
-            className="bg-white p-4 rounded-lg shadow-sm flex justify-between"
+            className="bg-white p-4 rounded-lg border border-gray-100 space-y-4"
           >
-            <div className="space-y-2">
-              {item.isVeg && <span className="text-green-600">●</span>}
-              <h3 className="font-semibold text-lg">{item.name}</h3>
-              <p className="text-lg">₹ {item.price}</p>
-              <p className="text-sm text-gray-500">Serves {item.serves}</p>
-              <p className="text-sm text-gray-600 line-clamp-2">
-                {item.description}
-                <button className="text-orange-500">...Read more</button>
-              </p>
-            </div>
-            <div className="relative">
+            <div className="flex justify-between items-start">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  {item.isVeg && (
+                    <span className="w-4 h-4 border-2 border-green-600 p-0.5">
+                      <span className="block w-full h-full bg-green-600 rounded-full" />
+                    </span>
+                  )}
+                  <h3 className="font-medium">{item.name}</h3>
+                </div>
+                <p className="font-medium">₹ {item.price}</p>
+                <p className="text-sm text-gray-500">Serves {item.serves}</p>
+              </div>
               <img
-                src={item.image || "/placeholder.svg"}
+                src={
+                  item.image ||
+                  "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-02-01%20at%209.24.26%E2%80%AFPM-ExCDkSjCkyIbE2WVhmEN5b03zysism.png"
+                }
                 alt={item.name}
-                className="w-32 h-32 object-cover rounded-lg"
+                className="w-24 h-24 object-cover rounded-lg"
               />
-              <button className="absolute bottom-2 right-2 bg-white rounded-lg px-3 py-2 shadow-lg flex items-center gap-2">
-                <span>AR Menu</span>
+            </div>
+
+            <div className="flex gap-3">
+              <button className="flex-1 px-4 py-2 border border-red-500 rounded-lg text-red-500 text-sm font-medium">
+                Order Online
+              </button>
+              <button className="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 text-sm font-medium flex items-center gap-2">
+                <span>View in AR</span>
                 <Camera className="w-4 h-4" />
               </button>
             </div>
@@ -108,11 +179,9 @@ export default function MenuPage() {
       </div>
 
       {/* Floating Menu Button */}
-      <button className="fixed bottom-6 right-6 bg-orange-500 text-white rounded-full p-4 shadow-lg">
+      <button className="fixed bottom-8 right-1/2 translate-x-1/2 bg-red-500 text-white rounded-full p-4 shadow-lg flex flex-col items-center">
         <Menu className="w-6 h-6" />
-        <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-sm font-medium">
-          MENU
-        </span>
+        <span className="text-xs font-medium mt-1">MENU</span>
       </button>
     </div>
   );

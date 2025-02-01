@@ -24,7 +24,7 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path="/menu" element={<Menu></Menu>}></Route>
+        <Route path="/menu/:rest_id" element={<Menu></Menu>}></Route>
         <Route path="/add_dish/:rest_id" element={<AddDish></AddDish>}></Route>
         <Route
           path="/add_dish_client/:rest_id"

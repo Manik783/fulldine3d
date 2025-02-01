@@ -7,3 +7,9 @@ module.exports.getRestaurantInfo = async (req, res, next) => {
     res.json({ restaurant });
   };
   
+// get restaurant's dish list
+module.exports.getDishList = async (req, res, next) => {
+  const { res_id } = req.params;
+  const dishes = await DishModel.getDishesByRestaurant(res_id);
+  res.json({ dishes });
+};

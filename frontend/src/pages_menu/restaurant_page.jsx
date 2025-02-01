@@ -147,7 +147,7 @@ export default function RestaurantPage() {
       {/* Navigation Buttons */}
       <div className="flex justify-between p-4">
         <button
-          onClick={() => navigate("/menu")}
+          onClick={() => navigate(`/menu/${rest_id}`)}
           className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg"
         >
           Go to Menu
