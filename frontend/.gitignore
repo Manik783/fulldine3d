@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 .env
+
+.DS_Store
+.next/
+next-env.d.ts
