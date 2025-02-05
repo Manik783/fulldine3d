@@ -37,4 +37,8 @@ router.post("/addreview", async (req, res, next) => {
 //restaurant information
 router.get("/restaurantinfo/:rest_id", menuController.getRestaurantInfo);
 
+
+// get dish cdn
+router.get("/dishcdn/:rest_id/:item_id", menuController.getDishCDN);
+
 module.exports = router;
