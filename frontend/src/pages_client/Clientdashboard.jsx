@@ -152,7 +152,7 @@ const Clientdashboard = () => {
                 <span className="font-medium">Views:</span> {dish.viewcount}
               </p>
               <p className="text-gray-700">
-                <span className="font-medium">3D Visibility:</span>{" "}
+                <span className="font-medium">Availability:</span>{" "}
                 {dish.availability ? "Enabled" : "Disabled"}
               </p>
 

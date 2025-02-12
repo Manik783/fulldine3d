@@ -105,7 +105,7 @@ const AddRestaurant = () => {
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Restaurant ID */}
-          <div>
+          {/* <div>
             <label
               htmlFor="rest_id"
               className="block text-sm font-medium text-gray-700"
@@ -120,7 +120,7 @@ const AddRestaurant = () => {
               onChange={handleChange}
               className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
             />
-          </div>
+          </div> */}
 
           {/* Name */}
           <div>

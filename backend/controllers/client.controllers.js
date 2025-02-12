@@ -34,8 +34,7 @@ module.exports.loginClient = async (req, res, next) => {
 // add dish
 module.exports.addDish = async (req, res, next) => {
   const {
-    res_id,
-    item_id,
+    rest_id,
     name,
     price,
     serves,
@@ -50,8 +49,7 @@ module.exports.addDish = async (req, res, next) => {
   } = req.body;
 
   const dish = await DishService.createProduct({
-    res_id,
-    item_id,
+    rest_id,
     name,
     price,
     serves,
@@ -87,7 +85,7 @@ module.exports.getInfo = async (req, res, next) => {
 // get restaurant's details
 module.exports.getinfo = async (req, res, next) => {
   const rest_id = req.params.rest_id;
-  const restaurant = await RestaurantModel.findById({ res_id: rest_id });
+  const restaurant = await RestaurantModel.findById({ rest_id: rest_id });
   if (!restaurant) {
     return res
       .status(404)

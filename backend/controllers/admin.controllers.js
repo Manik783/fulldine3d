@@ -75,7 +75,7 @@ module.exports.addDish = async (req, res, next) => {
   } = req.body;
 
   const dish = await DishService.createProduct({
-    res_id,
+    rest_id,
     item_id,
     name,
     price,
@@ -95,8 +95,8 @@ module.exports.addDish = async (req, res, next) => {
 
 // get restaurant's dish list
 module.exports.getDishList = async (req, res, next) => {
-  const { res_id } = req.params;
-  const dishes = await DishModel.getDishesByRestaurant(res_id);
+  const { rest_id } = req.params;
+  const dishes = await DishModel.getDishesByRestaurant(rest_id);
   res.json({ dishes });
 };
 

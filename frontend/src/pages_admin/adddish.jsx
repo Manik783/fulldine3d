@@ -120,7 +120,6 @@ const adddish = () => {
     e.preventDefault();
     const {
       rest_id,
-      item_id,
       name,
       price,
       serves,
@@ -136,7 +135,6 @@ const adddish = () => {
 
     if (
       !rest_id ||
-      !item_id ||
       !name ||
       !price ||
       !serves ||
@@ -144,9 +142,7 @@ const adddish = () => {
       !category1 ||
       !category2 ||
       !description ||
-      !image ||
-      !glb_url ||
-      !usdz_url
+      !image
     ) {
       alert("All fields are required!");
       return;
@@ -185,8 +181,6 @@ const adddish = () => {
         <h2 className="text-2xl font-bold text-center mb-6">Add Dish</h2>
 
         {[
-          { label: "Restaurant ID", name: "rest_id", type: "text" },
-          { label: "Item ID", name: "item_id", type: "text" },
           { label: "Name", name: "name", type: "text" },
           { label: "Price", name: "price", type: "text" },
           { label: "Serves", name: "serves", type: "text" },

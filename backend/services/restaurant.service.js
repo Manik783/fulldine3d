@@ -1,5 +1,5 @@
 const restaurantModel = require("../models/restaurant.model");
-
+const DishCounter = require("../models/counter.dish.model");
 module.exports.createRestaurant = async ({
   //rest_id,
   name,
@@ -37,6 +37,9 @@ module.exports.createRestaurant = async ({
     images, // Save images array
     reviewers, // Save reviewers array
   });
-
+  const dishCounter = await DishCounter.create({
+    rest_id: restaurant.rest_id,
+    dish_no: 0, // Start from 1 for the first dish
+  })
   return restaurant;
 };

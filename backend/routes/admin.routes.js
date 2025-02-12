@@ -29,7 +29,7 @@ router.post("/add_dish", authMiddleware.adminAuth, adminController.addDish);
 
 // get restaurant's dish list
 router.get(
-  "/dish_list/:res_id",
+  "/dish_list/:rest_id",
   //authMiddleware.adminAuth,
   adminController.getDishList
 );

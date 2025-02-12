@@ -60,12 +60,12 @@ const dishSchema = new mongoose.Schema({
   },
   visibility_3D: {
     type: Boolean,
-    default: false
+    default: false,
   },
   availability: {
     type: Boolean,
     default: true,
-  }
+  },
 });
 // Static method to get all dishes for a particular restaurant
 dishSchema.statics.getDishesByRestaurant = async function (rest_id) {
@@ -81,15 +81,15 @@ dishSchema.statics.getDishesByRestaurant = async function (rest_id) {
 // Static method to get all unique restaurant IDs
 dishSchema.statics.getAllRestaurantIds = async function () {
   try {
-    return await DishModel.distinct("rest_id");
+    return await DishModel.distinct(rest_id);
   } catch (error) {
     throw new Error("Error fetching restaurant IDs: " + error.message);
   }
 };
-dishSchema.statics.incrementViewCount = async function (rest_ID, dish_ID) {
+dishSchema.statics.incrementViewCount = async function (rest_id, item_id) {
   try {
     const updatedProduct = await this.findOneAndUpdate(
-      { item_id: dish_ID, rest_id: rest_ID },
+      { item_id, rest_id },
       { $inc: { viewCount: 1 } }, // Increment viewCount by 1
       { new: true } // Return the updated document
     );

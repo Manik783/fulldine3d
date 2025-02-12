@@ -7,7 +7,6 @@ const AddDishClient = () => {
   const { rest_id } = useParams();
   const [formData, setFormData] = useState({
     rest_id: rest_id,
-    item_id: "",
     name: "",
     price: "",
     serves: "",
@@ -62,7 +61,6 @@ const AddDishClient = () => {
     e.preventDefault();
     const {
       rest_id,
-      item_id,
       name,
       price,
       serves,
@@ -76,7 +74,6 @@ const AddDishClient = () => {
 
     if (
       !rest_id ||
-      !item_id ||
       !name ||
       !price ||
       !serves ||
@@ -121,7 +118,6 @@ const AddDishClient = () => {
         <h2 className="text-2xl font-bold text-center mb-6">Add Dish</h2>
 
         {[
-          { label: "Item ID", name: "item_id", type: "text" },
           { label: "Name", name: "name", type: "text" },
           { label: "Price", name: "price", type: "text" },
           { label: "Serves", name: "serves", type: "text" },
