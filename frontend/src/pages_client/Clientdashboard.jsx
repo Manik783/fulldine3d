@@ -191,4 +191,4 @@ const Clientdashboard = () => {
   );
 };
 
-export default ClientDashboard;
+export default Clientdashboard;
