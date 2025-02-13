@@ -104,7 +104,7 @@ const ClientLogin = () => {
         {/* Footer */}
         <p className="mt-6 text-sm text-center text-gray-500">
           Log in as admin ?{" "}
-          <Link href="/" className="text-blue-600 hover:underline">
+          <Link to="/" className="text-blue-600 hover:underline">
             Admin panel
           </Link>
         </p>
