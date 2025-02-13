@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -101,9 +101,9 @@ const Login = () => {
         {/* Footer */}
         <p className="mt-6 text-sm text-center text-gray-500">
           Log in as client?{" "}
-          <a href="/clientlogin" className="text-blue-600 hover:underline">
+          <Link to="/clientlogin" className="text-blue-600 hover:underline">
             Client panel
-          </a>
+          </Link>
         </p>
       </div>
     </div>
