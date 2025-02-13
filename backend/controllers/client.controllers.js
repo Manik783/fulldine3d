@@ -5,7 +5,7 @@ const { validationResult } = require("express-validator");
 const DishService = require("../services/dish.service");
 const DishModel = require("../models/dish.model");
 const RestaurantModel = require("../models/restaurant.model");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 // client login
 module.exports.loginClient = async (req, res, next) => {

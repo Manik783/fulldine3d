@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const CounterRestaurant = require("../models/counter.restaurant.model");
 const reviewerSchema = new mongoose.Schema({
