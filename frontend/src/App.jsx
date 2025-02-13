@@ -14,7 +14,7 @@ import AddAdmin from "./pages_admin/addadmin";
 import DishInfo from "./pages_menu/dishinfo";
 import RestaurantDetails from "./pages_admin/restaurantdetails";
 import EditRestaurant from "./pages_admin/EditRestaurant";
-import Clientdashboard from "./pages_client/Clientdashboard";
+import ClientDashboard from "./pages_client/Clientdashboard";
 import EditDishClient from "./pages_client/EditDishClient";
 import EditRestaurantClient from "./pages_client/editRestaurantClient";
 import RestaurantDetailsClient from "./pages_client/restaurantDetailsClient";
@@ -83,7 +83,7 @@ function App() {
         ></Route>
         <Route
           path="/clientdashboard/:rest_id"
-          element={<Clientdashboard></Clientdashboard>}
+          element={<ClientDashboard></ClientDashboard>}
         ></Route>
       </Routes>
     </div>
