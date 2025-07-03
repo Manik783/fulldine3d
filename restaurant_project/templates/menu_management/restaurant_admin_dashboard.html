@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %}Restaurant Admin Dashboard{% endblock %}
+
+{% block main_content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 class="mb-4">
+            <i class="fas fa-tachometer-alt me-2"></i>Restaurant Admin Dashboard
+        </h2>
+        {% if restaurant %}
+            <div class="alert alert-info">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <h5 class="mb-1">{{ restaurant.name }}</h5>
+                        <p class="mb-0 small">
+                            <a href="{% url 'public_menu' restaurant.public_slug %}" target="_blank" class="text-decoration-none">
+                                <i class="fas fa-external-link-alt me-1"></i>View Public Menu
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Categories Card -->
+    <div class="col-md-4">
+        <div class="card h-100 shadow">
+            <div class="card-body text-center">
+                <i class="fas fa-list fa-4x mb-3" style="color: var(--primary-color);"></i>
+                <h3 class="display-4 fw-bold">{{ categories_count }}</h3>
+                <p class="lead">Categories</p>
+                <div class="mt-4">
+                    <a href="{% url 'category_list' %}" class="btn btn-primary">
+                        <i class="fas fa-list me-1"></i> Manage Categories
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dishes Card -->
+    <div class="col-md-4">
+        <div class="card h-100 shadow">
+            <div class="card-body text-center">
+                <i class="fas fa-hamburger fa-4x mb-3" style="color: var(--primary-color);"></i>
+                <h3 class="display-4 fw-bold">{{ dishes_count }}</h3>
+                <p class="lead">Dishes</p>
+                <div class="mt-4">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'dish_list' %}" class="btn btn-primary">
+                            <i class="fas fa-hamburger me-1"></i> Manage Dishes
+                        </a>
+                        <a href="{% url 'dish_detail_dashboard' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-chart-bar me-1"></i> Detailed Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Views Card -->
+    <div class="col-md-4">
+        <div class="card h-100 shadow">
+            <div class="card-body text-center">
+                <i class="fas fa-eye fa-4x mb-3" style="color: var(--primary-color);"></i>
+                <div class="row">
+                    <div class="col-6 border-end">
+                        <h4 class="fw-bold">{{ total_3d_views }}</h4>
+                        <p>3D Views</p>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="fw-bold">{{ total_ar_views }}</h4>
+                        <p>AR Views</p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a href="{% url 'dish_detail_dashboard' %}" class="btn btn-primary">
+                        <i class="fas fa-chart-bar me-1"></i> View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Restaurant Information -->
+{% if restaurant %}
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Restaurant Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong><i class="fas fa-map-marker-alt me-2"></i>Address:</strong></p>
+                        <p>{{ restaurant.address }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong><i class="fas fa-phone me-2"></i>Phone:</strong></p>
+                        <p>{{ restaurant.phone }}</p>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <a href="{% url 'public_menu' restaurant.public_slug %}" target="_blank" class="btn btn-outline-primary">
+                        <i class="fas fa-external-link-alt me-1"></i>View Public Menu
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock main_content %}

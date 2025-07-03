@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Restaurant Menu Management - Home{% endblock %}
+
+{% block public_content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <!-- Hero Section -->
+        <div class="p-5 mb-4 bg-light rounded-3 text-center">
+            <div class="container-fluid py-5">
+                <h1 class="display-5 fw-bold">Restaurant Menu Management System</h1>
+                <p class="fs-4 mt-3">A comprehensive solution for managing restaurant menus with role-based access control.</p>
+                <div class="mt-4">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg px-4">
+                            <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                        </a>
+                    {% else %}
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="{% url 'super_admin_login' %}" class="btn btn-primary btn-lg px-4">
+                                <i class="fas fa-user-shield me-2"></i>Super Admin Login
+                            </a>
+                            <a href="{% url 'restaurant_admin_login' %}" class="btn btn-secondary btn-lg px-4">
+                                <i class="fas fa-user-tie me-2"></i>Restaurant Admin Login
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="row g-4 py-5">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-utensils fa-3x mb-3" style="color: var(--primary-color);"></i>
+                        <h3 class="card-title">Menu Management</h3>
+                        <p class="card-text">Easily create and manage restaurant menus with categories and dishes. Add images, prices, and detailed descriptions.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-user-lock fa-3x mb-3" style="color: var(--primary-color);"></i>
+                        <h3 class="card-title">Role-Based Access</h3>
+                        <p class="card-text">Separate interfaces for Super Admins and Restaurant Admins with appropriate permissions and access controls.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-globe fa-3x mb-3" style="color: var(--primary-color);"></i>
+                        <h3 class="card-title">Public Menu Pages</h3>
+                        <p class="card-text">Beautiful, customer-facing menu pages with unique URLs for each restaurant to share with customers.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock public_content %}

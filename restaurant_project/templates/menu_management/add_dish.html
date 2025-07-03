@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Dish{% endblock %}
+
+{% block main_content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-plus-circle me-2"></i>Add New Dish
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <!-- Left Column -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.name.id_for_label }}" class="form-label">Dish Name</label>
+                                {{ form.name }}
+                                {% if form.name.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.category.id_for_label }}" class="form-label">Primary Category</label>
+                                {{ form.category }}
+                                {% if form.category.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.category.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.additional_categories.id_for_label }}" class="form-label">Additional Categories</label>
+                                {{ form.additional_categories }}
+                                <div class="form-text">{{ form.additional_categories.help_text }}</div>
+                                {% if form.additional_categories.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.additional_categories.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="{{ form.price.id_for_label }}" class="form-label">Price ($)</label>
+                                        {{ form.price }}
+                                        {% if form.price.errors %}
+                                            <div class="text-danger small mt-1">
+                                                {{ form.price.errors }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="{{ form.serves.id_for_label }}" class="form-label">Serves</label>
+                                        {{ form.serves }}
+                                        <div class="form-text">E.g., "Serves 1", "Serves 2-3"</div>
+                                        {% if form.serves.errors %}
+                                            <div class="text-danger small mt-1">
+                                                {{ form.serves.errors }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.image.id_for_label }}" class="form-label">Dish Image</label>
+                                {{ form.image }}
+                                <div class="form-text">Upload a high-quality image of the dish (JPEG, PNG).</div>
+                                {% if form.image.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.image.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3 form-check form-switch">
+                                {{ form.has_3d_model }}
+                                <label class="form-check-label" for="{{ form.has_3d_model.id_for_label }}">
+                                    Enable 3D Model
+                                </label>
+                                {% if form.has_3d_model.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.has_3d_model.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div id="3d-model-fields" style="display: none;">
+                                <div class="mb-3">
+                                    <label for="{{ form.glb_file.id_for_label }}" class="form-label">GLB File (3D Model for Web)</label>
+                                    {{ form.glb_file }}
+                                    <div class="form-text">Upload a GLB file for 3D model viewing on web browsers.</div>
+                                    {% if form.glb_file.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {{ form.glb_file.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ form.usdz_file.id_for_label }}" class="form-label">USDZ File (3D Model for iOS AR)</label>
+                                    {{ form.usdz_file }}
+                                    <div class="form-text">Upload a USDZ file for AR viewing on iOS devices.</div>
+                                    {% if form.usdz_file.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {{ form.usdz_file.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                                {{ form.description }}
+                                <div class="form-text">Provide a detailed description of the dish, including ingredients and preparation.</div>
+                                {% if form.description.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.description.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3 form-check form-switch">
+                                {{ form.is_available }}
+                                <label class="form-check-label" for="{{ form.is_available.id_for_label }}">
+                                    Available on menu
+                                </label>
+                                {% if form.is_available.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.is_available.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Dish Type</label>
+                                <div class="d-flex gap-4">
+                                    {% for radio in form.is_vegetarian %}
+                                    <div class="form-check">
+                                        {{ radio.tag }}
+                                        <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                            {{ radio.choice_label }}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% if form.is_vegetarian.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.is_vegetarian.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'dish_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Dishes
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Save Dish
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main_content %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const has3dModelCheckbox = document.getElementById('has_3d_model');
+        const modelFields = document.getElementById('3d-model-fields');
+        
+        // Initial state
+        if (has3dModelCheckbox.checked) {
+            modelFields.style.display = 'block';
+        }
+        
+        // Toggle visibility when checkbox changes
+        has3dModelCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                modelFields.style.display = 'block';
+            } else {
+                modelFields.style.display = 'none';
+            }
+        });
+        
+        // Preview for GLB file
+        const glbFileInput = document.querySelector('input[name="glb_file"]');
+        glbFileInput.addEventListener('change', function() {
+            const fileNameDisplay = document.createElement('div');
+            fileNameDisplay.className = 'mt-2 text-info';
+            
+            // Remove any existing preview
+            const existingPreview = this.parentNode.querySelector('.text-info');
+            if (existingPreview) {
+                existingPreview.remove();
+            }
+            
+            if (this.files.length > 0) {
+                fileNameDisplay.innerHTML = `<i class="fas fa-check-circle"></i> Selected: ${this.files[0].name}`;
+                this.parentNode.appendChild(fileNameDisplay);
+            }
+        });
+        
+        // Preview for USDZ file
+        const usdzFileInput = document.querySelector('input[name="usdz_file"]');
+        usdzFileInput.addEventListener('change', function() {
+            const fileNameDisplay = document.createElement('div');
+            fileNameDisplay.className = 'mt-2 text-info';
+            
+            // Remove any existing preview
+            const existingPreview = this.parentNode.querySelector('.text-info');
+            if (existingPreview) {
+                existingPreview.remove();
+            }
+            
+            if (this.files.length > 0) {
+                fileNameDisplay.innerHTML = `<i class="fas fa-check-circle"></i> Selected: ${this.files[0].name}`;
+                this.parentNode.appendChild(fileNameDisplay);
+            }
+        });
+    });
+</script>
+{% endblock %}

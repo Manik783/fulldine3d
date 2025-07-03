@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ restaurant.name }} - Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https极://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .gold-active {
+            background-color: #B29A68;
+        }
+        .gold-text {
+            color: #B29A68;
+        }
+        .gold-border {
+            border-color: #B29A68;
+        }
+        .ar-button {
+            background-color: #B29A68;
+            color: black;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.625rem 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        .ar-button:hover {
+            transform: scale(1.05);
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: #000;
+            margin: auto;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 75%;
+            border-top-left-radius: 25px;
+            border-top-right-radius: 25px;
+            padding: 20px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .modal-close-button {
+            color: #d4af37;
+            font-size: 2rem;
+            font-weight: bold;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        model-viewer {
+            width: 100%;
+            height: 300px;
+            --poster-color: #000;
+            --progress-bar-color: #d4af37;
+            --progress-bar-height: 2px;
+            --controls-color: #d4af极;
+            --controls-background: rgba(0,0,0,0.5);
+        }
+        .filter-button.active {
+            background-color: #B29A68 !important;
+            color: black !important;
+        }
+        .category-menu {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            z-index: 1000;
+            background: rgba(0,0,0,0.9);
+            border: 1px solid #B29A68;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 15px;
+            max-height: 70vh;
+            overflow-y: auto;
+            display: none;
+            width: 300px;
+        }
+        .category-header {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #B29A68;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(178, 154, 104, 0.3);
+        }
+        .category-item {
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 8px;
+            background: rgba(178, 154, 104, 0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .category-item:hover {
+            background: rgba(178, 154, 104, 0.3);
+        }
+        .category-name {
+            font-weight: 600;
+            color: #B29A68;
+        }
+        .dish-count {
+            color: #B29A68;
+            font-size: 0.9rem;
+            font-weight: 600;
+            background: rgba(178, 154, 104, 0.1);
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-left: 8px;
+        }
+        /* Reset button styles */
+        .reset-button {
+            background-color: #444;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.625rem 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        .reset-button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body class="bg-black">
+    <div class="max-w-7xl mx-auto min-h-screen bg-black text-white antialiased relative">
+        <div class="sticky top极0 bg-black z-10 px-4 lg:px-8">
+            <header class="py-4 flex items-center space-x-3">
+                <div class="text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#B29A68" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10极0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-400">You're at</p>
+                    <h1 class="text-lg font-bold">{{ restaurant.name }}</h1>
+                </div>
+            </header>
+
+            <div class="pb-4">
+                <div class="relative">
+                    <input type="text" placeholder="Search menu, restaurant or etc" class="w-full bg-[#1C1C1E] border border-gray-800 rounded-lg py-3 pl-12 pr-12 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#B29A68]" id="searchInput">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </div>
+                    <div class="absolute inset-y-0 right-0 pr-4 flex items-center">
+                        <button class="text-gray-400 hover:text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="pb-4">
+                <div class="flex space-x-2 overflow-x-auto no-scrollbar" id="filterButtonsContainer">
+                    <button class="px-6 py-2 text-sm font-semibold bg-[#1A1A1A] text-gray-300 rounded-full whitespace-nowrap filter-button" data-filter="all">All</button>
+                    <button class="px-6 py-2 text-sm font-semibold bg-[#1A1A1A] text-gray-300 rounded-full whitespace-nowrap filter-button" data-filter="veg">Veg</button>
+                    <button class="px-6 py-2 text-sm font-semibold bg-[#1A1A1A] text-gray-300 rounded-full whitespace-nowrap filter-button" data-filter="non-veg">Non-Veg</button>
+                    {% for category in categories %}
+                        <button class="px-6 py-2 text-sm font-semibold bg-[#1A1A1A] text-gray-300 rounded-full whitespace-nowrap filter-button" data-filter="category-{{ category.id }}">{{ category.name }}</button>
+                    {% endfor %}
+                </div>
+            </nav>
+        </div>
+
+        <main class="px-4 lg:px-8 pb-24" id="dishesList">
+            {% for dish in all_dishes %}
+            <div class="bg-black border-t gold-border flex items-center justify-between py-6 dish-card" data-dish-id="{{ dish.id }}" data-dish-name="{{ dish.name|lower }}" data-dish-type="{{ dish.is_vegetarian }}" data-dish-categories="{% for category in dish.categories.all %}{{ category.id }},{% endfor %}">
+                <div class="flex-grow">
+                    <p class="text-xs font-medium {% if dish.is_vegetarian == 'veg' %}text-green-500{% else %}text-red-500{% endif %} flex items-center">
+                        <span class="w-1.5 h-1.5 {% if dish.is_vegetarian == 'veg' %}bg-green-500{% else %}bg-red-500{% endif %} rounded-full mr-1.5"></span>
+                        {% if dish.is_vegetarian == 'veg' %}Veg{% else %}Non-Veg{% endif %}
+                    </p>
+                    <h3 class="font-bold text-lg mt-1">{{ dish.name }}</h3>
+                    <p class="font-semibold text-base mt-1">₹{{ dish.price }}</p>
+                    <p class="text-xs text-gray-400 mt-1">{{ dish.serves }}</p>
+                </div>
+                <div class="relative w-48 h-32 flex-shrink-0 ml-4">
+                    {% if dish.image %}
+                        <img src="{{ dish.image.url }}" 
+                             onerror="this.onerror=null;this.src='https://placehold.co/400x260/202020/FFFFFF?text=Img+Error';"
+                             alt="{{ dish.name }}" class="w-full h-full object-cover rounded-lg">
+                    {% else %}
+                        <img src="https://placehold.co/400x260/101010/FFFFFF?text={{ dish.name|urlencode }}"
+                             alt="{{ dish.name }}" class="w-full h-full object-cover rounded-lg">
+                    {% endif %}
+                    {% if dish.has_3d_model %}
+                    <div class="absolute inset-x-0 -bottom-4 flex justify-center">
+                        <button class="ar-button view-ar-button" data-dish-id="{{ dish.id }}">View in AR</button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </main>
+
+        <!-- Floating Category Menu -->
+        <div class="fixed bottom-6 right-6 z-50">
+            <button class="w-16 h-16 gold-active rounded-full flex flex-col items-center justify-center text-black font-bold shadow-lg shadow-yellow-800/20" id="categoryMenuButton">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18a6 6 0 0 0 6-6 6 6 0 0 0-6-6 6 6 0 0 0-6 6 6 6 0 0 0 6 6Z"/><path d="M12 4v2"/><path d="M12 20v-2"/><path d="m18.36 5.64-.9.9"/><path d="m6.54 17.46-.9.9"/><path d="M20 12h-2"/><path d="M4 12H2"/><path d="m18.36 18.36-.9-.9"/><path d="m6.54 6.54-.9-.9"/></svg>
+                <span class="text-xs font-semibold" style="font-size: 8px; margin-top: 2px;">MENU</span>
+            </button>
+        </div>
+
+        <!-- Category Menu Popup -->
+        <div class="category-menu" id="categoryMenu">
+            <div class="category-header">Menu Categories</div>
+            {% for category in categories %}
+            <div class="category-item" data-category-id="{{ category.id }}">
+                <div class="category-name">{{ category.name }}</div>
+                <div class="dish-count">{{ category.dish_count }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="modelViewerModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close-button" onclick="close3DModal()">&times;</span>
+            <div class="modal-body">
+                <model-viewer id="dishModelViewer"
+                    ar
+                    ar-modes="webxr scene-viewer quick-look"
+                    shadow-intensity="1"
+                    camera-controls
+                    touch-action="pan-y"
+                    alt="A 3D model of the dish"
+                    src=""
+                    ios-src="">
+                </model-viewer>
+                <div class="modal-dish-info">
+                    <div class="dish-type-indicator" id="modalDishType">
+                        <span class="dot"></span>
+                        <span></span>
+                    </div>
+                    <h3 class="dish-name" id="modalDishName"></h3>
+                    <p class="dish-price" id="modalDishPrice"></p>
+                    <p class="dish-serves" id="modalDishServes"></p>
+                    <p class="dish-description" id="modalDishDescription"></p>
+                    <button class="modal-ar-button ar-button mt-4" id="modalARButton">
+                        <i class="fas fa-vr-cardboard"></i> View in AR
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const dishesList = document.getElementById('dishesList');
+            const dishCards = dishesList.querySelectorAll('.dish-card');
+            const filterButtonsContainer = document.getElementById('filterButtonsContainer');
+            const filterButtons = filterButtonsContainer.querySelectorAll('.filter-button');
+            const categoryMenuButton = document.getElementById('categoryMenuButton');
+            const categoryMenu = document.getElementById('categoryMenu');
+
+            // Set active button function
+            function setActiveButton(button) {
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.classList.remove('gold-active', 'text-black');
+                    btn.classList.add('bg-[#1A1A1A]', 'text-gray-300');
+                });
+                
+                button.classList.remove('bg-[#1A1A1A]', 'text-gray-300');
+                button.classList.add('active', 'gold-active', 'text-black');
+            }
+            
+            // Add event delegation for filter buttons
+            filterButtonsContainer.addEventListener('click', function(event) {
+                if (event.target.classList.contains('filter-button')) {
+                    setActiveButton(event.target);
+                    filterDishes();
+                }
+            });
+            
+            // Initialize active state for All button
+            const allButton = filterButtonsContainer.querySelector('[data-filter="all"]');
+            setActiveButton(allButton);
+            
+            function filterDishes() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const activeFilterButton = filterButtonsContainer.querySelector('.filter-button.active');
+                const activeFilter = activeFilterButton ? activeFilterButton.dataset.filter : 'all';
+                
+                dishCards.forEach(card => {
+                    const dishName = card.dataset.dishName.toLowerCase();
+                    const dishType = card.dataset.dishType;
+                    const dishCategories = card.dataset.dishCategories.split(',').filter(id => id !== '');
+
+                    let matchesSearch = dishName.includes(searchTerm);
+                    let matchesFilter = false;
+
+                    if (activeFilter === 'all') {
+                        matchesFilter = true;
+                    } else if (activeFilter === 'veg') {
+                        matchesFilter = dishType === 'veg';
+                    } else if (activeFilter === 'non-veg') {
+                        matchesFilter = dishType === 'non_veg';
+                    } else if (activeFilter.startsWith('category-')) {
+                        const categoryId = activeFilter.split('-')[1];
+                        matchesFilter = dishCategories.includes(categoryId);
+                    }
+
+                    // Show card only if it matches both search and filter
+                    if (matchesSearch && matchesFilter) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+
+            searchInput.addEventListener('input', filterDishes);
+            filterDishes(); // Initial filter
+
+            // Category menu functionality
+            categoryMenuButton.addEventListener('click', function() {
+                if (categoryMenu.style.display === 'block') {
+                    categoryMenu.style.display = 'none';
+                } else {
+                    categoryMenu.style.display = 'block';
+                }
+            });
+
+            // Handle category selection
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const categoryId = this.dataset.categoryId;
+                    const categoryButton = document.querySelector(`[data-filter="category-${categoryId}"]`);
+                    setActiveButton(categoryButton);
+                    filterDishes();
+                    categoryMenu.style.display = 'none';
+                });
+            });
+
+            // Close category menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!categoryMenu.contains(event.target) && event.target !== categoryMenuButton) {
+                    categoryMenu.style.display = 'none';
+                }
+            });
+
+            // Add event delegation for AR buttons
+            document.addEventListener('click', function(event) {
+                if (event.target.closest('.view-ar-button')) {
+                    const button = event.target.closest('.view-ar-button');
+                    const dishId = button.dataset.dishId;
+                    open3DModal(dishId);
+                }
+            });
+
+            // 3D model functions
+            const modelViewerModal = document.getElementById('modelViewerModal');
+            const dishModelViewer = document.getElementById('dishModelViewer');
+            const resetModelBtn = document.getElementById('reset-model-btn');
+            
+            async function open3DModal(dishId) {
+                try {
+                    const response = await fetch(`/api/dish-3d-data/${dishId}/`);
+                    const dishData = await response.json();
+                    
+                    if (dishData.has_3d_model) {
+                        // Add timestamp to force reload
+                        const timestamp = Date.now();
+                        dishModelViewer.src = dishData.glb_file_url + '?t=' + timestamp;
+                        dishModelViewer.iosSrc = dishData.usdz_file_url + '?t=' + timestamp;
+                        
+                        // Reset camera position
+                        dishModelViewer.cameraOrbit = '0deg 75deg 105%';
+                        
+                        document.getElementById('modalDishName').textContent = dishData.name;
+                        document.getElementById('modalDishPrice').textContent = `₹${dishData.price}`;
+                        document.getElementById('modalDishServes').textContent = dishData.serves;
+                        document.getElementById('modalDishDescription').textContent = dishData.description;
+                        
+                        // Update AR button to handle device-specific AR
+                        document.getElementById('modalARButton').onclick = function() {
+                            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+                            
+                            // iOS devices
+                            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                                window.location.href = dishData.usdz_file_url;
+                            }
+                            // Android devices
+                            else if (/android/i.test(userAgent)) {
+                                // Open GLB in Google Model Viewer
+                                const modelViewerURL = `https://modelviewer.dev/experimental/?url=${encodeURIComponent(dishData.glb_file_url)}&mode=ar`;
+                                window.open(modelViewerURL, '_blank');
+                            }
+                            // Other devices (desktop, etc.)
+                            else {
+                                alert('AR viewing is only supported on mobile devices. Please use an iOS or Android device.');
+                            }
+                        };
+                        
+                        modelViewerModal.style.display = 'block';
+                    } else {
+                        alert('3D model not available for this dish');
+                    }
+                } catch (error) {
+                    console.error('Error loading 3D data:', error);
+                    alert('Error loading 3D model');
+                }
+            }
+            
+            function close3DModal() {
+                modelViewerModal.style.display = 'none';
+                dishModelViewer.src = '';
+                dishModelViewer.iosSrc = '';
+            }
+            
+            // Reset model viewer
+            if (resetModelBtn) {
+                resetModelBtn.addEventListener('click', function() {
+                    dishModelViewer.cameraOrbit = '0deg 75deg 105%';
+                });
+            }
+            
+            window.onclick = function(event) {
+                if (event.target === modelViewerModal) close3DModal();
+            };
+        });
+    </script>
+</body>
+</html>

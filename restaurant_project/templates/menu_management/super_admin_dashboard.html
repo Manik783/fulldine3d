@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block title %}Super Admin Dashboard{% endblock %}
+
+{% block main_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+        <i class="fas fa-tachometer-alt me-2"></i>Super Admin Dashboard
+    </h2>
+    <div>
+        <a href="{% url 'add_restaurant' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i> Add Restaurant
+        </a>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row g-4 mb-4">
+    <!-- Restaurants Card -->
+    <div class="col-md-3">
+        <div class="card h-100 shadow border-0">
+            <div class="card-body text-center p-4">
+                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                    <i class="fas fa-utensils fa-2x text-primary"></i>
+                </div>
+                <h3 class="fw-bold mb-1">{{ total_restaurants }}</h3>
+                <p class="text-muted mb-0">Restaurants</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Categories Card -->
+    <div class="col-md-3">
+        <div class="card h-100 shadow border-0">
+            <div class="card-body text-center p-4">
+                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                    <i class="fas fa-list fa-2x text-primary"></i>
+                </div>
+                <h3 class="fw-bold mb-1">{{ total_categories }}</h3>
+                <p class="text-muted mb-0">Categories</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dishes Card -->
+    <div class="col-md-3">
+        <div class="card h-100 shadow border-0">
+            <div class="card-body text-center p-4">
+                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                    <i class="fas fa-hamburger fa-2x text-primary"></i>
+                </div>
+                <h3 class="fw-bold mb-1">{{ total_dishes }}</h3>
+                <p class="text-muted mb-0">Dishes</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Views Card -->
+    <div class="col-md-3">
+        <div class="card h-100 shadow border-0">
+            <div class="card-body text-center p-4">
+                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                    <i class="fas fa-eye fa-2x text-primary"></i>
+                </div>
+                <div class="d-flex justify-content-center gap-4">
+                    <div>
+                        <h4 class="fw-bold mb-1">{{ total_3d_views }}</h4>
+                        <p class="text-muted mb-0">3D Views</p>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold mb-1">{{ total_ar_views }}</h4>
+                        <p class="text-muted mb-0">AR Views</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow border-0">
+    <div class="card-header bg-primary bg-gradient text-white py-3">
+        <h5 class="mb-0 d-flex align-items-center">
+            <i class="fas fa-utensils me-2"></i>Restaurants
+        </h5>
+    </div>
+    <div class="card-body p-0">
+        {% if restaurants %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" style="min-width: 1200px;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Phone</th>
+                            <th>Categories</th>
+                            <th>Dishes</th>
+                            <th>3D Views</th>
+                            <th>AR Views</th>
+                            <th>Public Menu</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for restaurant in restaurants %}
+                            <tr>
+                                <td>{{ restaurant.name }}</td>
+                                <td>{{ restaurant.address }}</td>
+                                <td>{{ restaurant.phone }}</td>
+                                <td>{{ restaurant.categories_count }}</td>
+                                <td>{{ restaurant.dishes_count }}</td>
+                                <td>{{ restaurant.model_3d_views }}</td>
+                                <td>{{ restaurant.ar_views }}</td>
+                                <td>
+                                    <a href="{% url 'public_menu' restaurant.public_slug %}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-external-link-alt me-1"></i>View Menu
+                                    </a>
+                                </td>
+                                <td>{{ restaurant.created_at|date:"M d, Y" }}</td>
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <a href="{% url 'edit_restaurant' restaurant.id %}" class="btn btn-sm btn-outline-primary rounded-circle" title="Edit" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{% url 'delete_restaurant' restaurant.id %}" class="btn btn-sm btn-outline-danger rounded-circle" title="Delete" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                        {% if not restaurant.has_admin %}
+                                            <a href="{% url 'create_restaurant_admin' restaurant.id %}" class="btn btn-sm btn-outline-success rounded-circle" title="Add Admin" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-user-plus"></i>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-store-slash fa-4x mb-3 text-muted"></i>
+                <p class="lead">No restaurants have been added yet.</p>
+                <a href="{% url 'add_restaurant' %}" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i> Add Restaurant
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

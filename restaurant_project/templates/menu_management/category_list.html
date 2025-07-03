@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Categories{% endblock %}
+
+{% block main_content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>Menu Categories
+                </h5>
+                <a href="{% url 'add_category' %}" class="btn btn-light btn-sm">
+                    <i class="fas fa-plus me-1"></i>Add Category
+                </a>
+            </div>
+            <div class="card-body p-0">
+                {% if categories %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col" width="5%">#</th>
+                                <th scope="col" width="40%">Category Name</th>
+                                <th scope="col" width="15%">Order</th>
+                                <th scope="col" width="15%">Dishes</th>
+                                <th scope="col" width="25%">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in categories %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ category.name }}</td>
+                                <td>{{ category.order }}</td>
+                                <td>
+                                    <a href="{% url 'dish_list' %}?category={{ category.id }}" class="text-decoration-none">
+                                        {{ category.dish_set.count }} dishes
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{% url 'edit_category' category.id %}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <a href="{% url 'delete_category' category.id %}" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash-alt"></i> Delete
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-list fa-4x mb-3 text-muted"></i>
+                    <h4>No Categories Added Yet</h4>
+                    <p class="text-muted mb-4">Start by adding categories like Breakfast, Lunch, Dinner, etc.</p>
+                    <a href="{% url 'add_category' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>Add First Category
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            {% if categories %}
+            <div class="card-footer bg-light">
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">Total: {{ categories|length }} categories</small>
+                    <a href="{% url 'restaurant_admin_dashboard' %}" class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock main_content %}

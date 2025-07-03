@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+{{ dish.name }} - AR View
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background-color: #000;
+        color: #d4af37;
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        position: relative;
+    }
+    
+    .ar-container {
+        width: 100%;
+        height: 75vh;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #000;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.5);
+        z-index: 100;
+        overflow: hidden;
+    }
+    
+    model-viewer {
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+        --poster-color: transparent;
+    }
+    
+    .close-button {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        border: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 101;
+    }
+    
+    .dish-info {
+        padding: 1.5rem;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7) 60%, transparent);
+        color: #fff;
+        z-index: 101;
+    }
+    
+    .dish-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.3rem;
+        color: #d4af37;
+    }
+    
+    .dish-description {
+        color: #ccc;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        margin-bottom: 0.5rem;
+        max-width: 80%;
+    }
+    
+    .dish-details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .detail-label {
+        font-size: 0.8rem;
+        color: #999;
+    }
+    
+    .detail-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #d4af37;
+    }
+    
+    .ar-button {
+        background-color: #d4af37;
+        color: #000;
+        border: none;
+        padding: 0.7rem 1.2rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border-radius: 5px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .ar-button:hover {
+        background-color: #f5cc4d;
+    }
+    
+    .ar-instructions {
+        background-color: rgba(0, 0, 0, 0.7);
+        border-radius: 10px;
+        padding: 1rem;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: #ccc;
+        max-width: 400px;
+    }
+    
+    .ar-instructions h3 {
+        color: #d4af37;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+    }
+    
+    .ar-instructions ul {
+        margin: 0.5rem 0 0 0;
+        padding-left: 1.2rem;
+    }
+    
+    .ar-instructions li {
+        margin-bottom: 0.3rem;
+    }
+    
+    @media (max-width: 768px) {
+        .ar-container {
+            height: 70vh;
+        }
+        
+        .dish-description {
+            max-width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block public_content %}
+<div class="ar-container">
+    <button class="close-button" onclick="window.history.back()">
+        <i class="fas fa-times"></i>
+    </button>
+    
+    <model-viewer 
+        src="{{ dish.glb_file.url }}" 
+        ios-src="{{ dish.usdz_file.url }}" 
+        alt="{{ dish.name }} AR Model"
+        ar 
+        ar-modes="webxr scene-viewer quick-look" 
+        camera-controls 
+        shadow-intensity="1" 
+        auto-rotate 
+        ar-scale="fixed" 
+        environment-image="neutral" 
+        exposure="0.8"
+        id="dish-ar-model">
+        
+        <button slot="ar-button" class="ar-button" style="background-color: #d4af37; color: #000; border: none; padding: 12px 24px; font-size: 16px; font-weight: 600; border-radius: 50px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);">
+            <i class="fas fa-cube"></i> View in AR
+        </button>
+    </model-viewer>
+    
+    <div class="dish-info">
+        <h1 class="dish-name">{{ dish.name }}</h1>
+        <p class="dish-description">{{ dish.description }}</p>
+        
+        <div class="dish-details">
+            <div class="detail-item">
+                <span class="detail-label">Price:</span>
+                <span class="detail-value">₹{{ dish.price }}</span>
+            </div>
+            
+            <div class="detail-item">
+                <span class="detail-label">Serves:</span>
+                <span class="detail-value">{{ dish.serves }}</span>
+            </div>
+            
+            <div class="detail-item">
+                <span class="detail-label">Type:</span>
+                <span class="detail-value">{% if dish.is_vegetarian == 'veg' %}Vegetarian{% else %}Non-Vegetarian{% endif %}</span>
+            </div>
+        </div>
+        
+        <div class="ar-instructions">
+            <h3>How to use AR view:</h3>
+            <ul>
+                <li>Tap the "View in AR" button above</li>
+                <li>Point your camera at a flat surface</li>
+                <li>Move your device until the model appears</li>
+                <li>Pinch to resize or drag to reposition</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Track AR view and handle model reset
+document.addEventListener('DOMContentLoaded', function() {
+    // Send tracking request
+    fetch('/api/track-ar-view/{{ dish.id }}/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+        }
+    });
+    
+    const modelViewer = document.getElementById('dish-ar-model');
+    if (modelViewer) {
+        // Store original sources
+        const originalGlbSrc = modelViewer.getAttribute('src');
+        const originalUsdzSrc = modelViewer.getAttribute('ios-src');
+        
+        // Add event listener for AR session end
+        modelViewer.addEventListener('ar-status', (event) => {
+            if (event.detail.status === 'not-presenting') {
+                // Reload model by resetting sources
+                modelViewer.setAttribute('src', originalGlbSrc + '?t=' + Date.now());
+                modelViewer.setAttribute('ios-src', originalUsdzSrc + '?t=' + Date.now());
+                
+                // Reset transformations
+                modelViewer.reset();
+                modelViewer.cameraOrbit = '0deg 75deg 105%';
+            }
+        });
+        
+        // Add event listener for AR button click
+        const arButton = modelViewer.querySelector('button[slot="ar-button"]');
+        if (arButton) {
+            arButton.addEventListener('click', function() {
+                console.log('AR mode activated');
+            });
+        }
+    }
+});
+</script>
+{% endblock %}

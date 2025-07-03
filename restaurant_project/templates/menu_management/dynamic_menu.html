@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+{{ restaurant.name }} - Menu
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dynamic-menu-container {
+        background-color: #000;
+        font-family: 'Arial', sans-serif;
+        padding: 20px;
+        min-height: 100vh;
+        color: #d4af37;
+    }
+    
+    .restaurant-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 15px;
+        border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    
+    .restaurant-header h1 {
+        color: #d4af37;
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+    
+    .restaurant-header p {
+        color: #ccc;
+        margin: 5px 0;
+    }
+    
+    .categories-section {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .category-card {
+        margin-bottom: 30px;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    
+    .category-title {
+        color: #d4af37;
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    
+    .dishes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+    
+    .dish-card {
+        background: rgba(20, 20, 20, 0.8);
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    
+    .dish-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        border-color: rgba(212, 175, 55, 0.5);
+    }
+    
+    .dish-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        background: linear-gradient(45deg, #111, #222);
+    }
+    
+    .dish-details {
+        padding: 15px;
+    }
+    
+    .dish-name {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #d4af37;
+        margin-bottom: 5px;
+    }
+    
+    .dish-description {
+        color: #ccc;
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+        min-height: 60px;
+    }
+    
+    .dish-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .dish-price {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #d4af37;
+    }
+    
+    .dish-type {
+        padding: 3px 10px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+    
+    .veg {
+        background: rgba(46, 125, 50, 0.2);
+        color: #4caf50;
+        border: 1px solid rgba(46, 125, 50, 0.5);
+    }
+    
+    .non-veg {
+        background: rgba(198, 40, 40, 0.2);
+        color: #ff5252;
+        border: 1px solid rgba(198, 40, 40, 0.5);
+    }
+    
+    @media (max-width: 768px) {
+        .dishes-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .restaurant-header h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block public_content %}
+<div class="dynamic-menu-container">
+    <div class="restaurant-header">
+        <h1>{{ restaurant.name }}</h1>
+        <p>{{ restaurant.address }}</p>
+        <p>{{ restaurant.phone }}</p>
+    </div>
+    
+    <div class="categories-section">
+        {% for category in category_data %}
+        <div class="category-card">
+            <h2 class="category-title">{{ category.category.name }}</h2>
+            <div class="dishes-grid">
+                {% for dish in category.dishes %}
+                <div class="dish-card">
+                    {% if dish.image %}
+                        <img src="{{ dish.image.url }}" alt="{{ dish.name }}" class="dish-image">
+                    {% else %}
+                        <div class="dish-image" style="display: flex; align-items: center; justify-content: center; color: #d4af37;">
+                            <i class="fas fa-utensils" style="font-size: 3rem;"></i>
+                        </div>
+                    {% endif %}
+                    <div class="dish-details">
+                        <h3 class="dish-name">{{ dish.name }}</h3>
+                        <p class="dish-description">{{ dish.description }}</p>
+                        <div class="dish-meta">
+                            <span class="dish-price">₹{{ dish.price }}</span>
+                            <span class="dish-type {% if dish.is_vegetarian == 'veg' %}veg{% else %}non-veg{% endif %}">
+                                {% if dish.is_vegetarian == 'veg' %}Veg{% else %}Non-Veg{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

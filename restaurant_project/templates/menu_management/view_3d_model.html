@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+{{ dish.name }} - 3D Model
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background-color: #000;
+        color: #d4af37;
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+    }
+    
+    .model-container {
+        width: 100%;
+        height: 60vh;
+        margin: 0 auto;
+        position: relative;
+    }
+    
+    model-viewer {
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+        --poster-color: transparent;
+    }
+    
+    .dish-info {
+        padding: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .dish-name {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #d4af37;
+    }
+    
+    .dish-description {
+        color: #ccc;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+    
+    .dish-details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .detail-label {
+        font-size: 0.9rem;
+        color: #999;
+        margin-bottom: 0.3rem;
+    }
+    
+    .detail-value {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #d4af37;
+    }
+    
+    .ar-button {
+        background-color: #d4af37;
+        color: #000;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 5px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .ar-button:hover {
+        background-color: #f5cc4d;
+    }
+    
+    .back-button {
+        background-color: transparent;
+        color: #d4af37;
+        border: 1px solid #d4af37;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 5px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        margin-right: 1rem;
+    }
+    
+    .back-button:hover {
+        background-color: rgba(212, 175, 55, 0.1);
+    }
+    
+    .button-container {
+        margin-top: 2rem;
+    }
+    
+    @media (max-width: 768px) {
+        .dish-details {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .model-container {
+            height: 50vh;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block public_content %}
+<div class="model-container">
+    <model-viewer 
+        src="{{ dish.glb_file.url }}" 
+        ios-src="{{ dish.usdz_file.url }}" 
+        alt="{{ dish.name }} 3D Model"
+        auto-rotate 
+        camera-controls 
+        shadow-intensity="1" 
+        environment-image="neutral" 
+        exposure="0.8"
+        id="dish-model">
+    </model-viewer>
+</div>
+
+<div class="dish-info">
+    <h1 class="dish-name">{{ dish.name }}</h1>
+    <p class="dish-description">{{ dish.description }}</p>
+    
+    <div class="dish-details">
+        <div class="detail-item">
+            <span class="detail-label">Price</span>
+            <span class="detail-value">₹{{ dish.price }}</span>
+        </div>
+        
+        <div class="detail-item">
+            <span class="detail-label">Serves</span>
+            <span class="detail-value">{{ dish.serves }}</span>
+        </div>
+        
+        <div class="detail-item">
+            <span class="detail-label">Type</span>
+            <span class="detail-value">{% if dish.is_vegetarian == 'veg' %}Vegetarian{% else %}Non-Vegetarian{% endif %}</span>
+        </div>
+        
+        <div class="detail-item">
+            <span class="detail-label">Category</span>
+            <span class="detail-value">{{ dish.category.name }}</span>
+        </div>
+    </div>
+    
+    <div class="button-container">
+        <a href="javascript:history.back()" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back to Menu
+        </a>
+        
+        <button class="ar-button" onclick="viewARModel('{{ dish.id }}')">
+            <i class="fas fa-mobile-alt"></i> View in AR
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Track 3D model view
+    document.addEventListener('DOMContentLoaded', function() {
+        // Send tracking request
+        fetch('/api/track-3d-view/{{ dish.id }}/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        });
+    });
+    
+    // AR Model viewing function
+    function viewARModel(dishId) {
+        window.location.href = `/menu_management/view_ar_model/${dishId}/`;
+    }
+</script>
+{% endblock %}

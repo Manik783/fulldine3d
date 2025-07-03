@@ -1,0 +1,18 @@
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+media
+
+# Environment files
+.env
+
+# IDE files
+.idea/
+.vscode/
+.DS_Store
+
+# Static files collected locally
+staticfiles/
